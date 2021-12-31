@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-4 offset-4">
+            <div class="card" style="padding: 10px">
+                
+                <h1>{{ object.title|title }}</h1>
+                <hr>
+                <img src="{{ object.thumbnail.url }}"  alt="thumbnail" width="380">
+
+                <div>
+                
+                    <span><i class="fas fa-thumbs-up ml-2"> </i> {{ object.get_like_count }} </span>
+                    <span><i class="fas fa-eye ml-2"> </i> {{ object.get_view_count }} </span>
+                    <span><i class="fas fa-comments ml-2"> </i> {{ object.get_comment_count }} </span>
+                
+                </div>
+                
+                <div style="padding: 10px;">
+                    <p>
+                        {{ object.content }}
+                    </p>
+                </div>
+                
+                
+                {% if request.user.id == object.author_id %}
+                <hr>
+                <div>        
+                    <a href="{{ object.get_update_url }}">
+                        <button class="btn btn-primary" >Editar</button>
+                    </a>
+                </div>
+                <br>
+                <div>        
+                    <a href="{{ object.get_delete_url }}">
+                        <button class="btn btn-primary" >Borrar</button>
+                    </a>
+                </div>
+                 
+                {% endif %}
+                    
+                <hr>
+                <div>
+                    <h4>Si te gusto este post, dale LIKE</h4>
+                    <a  class="text-mutes" href=" {{ object.get_like_url }} ">
+                        <i class="fas fa-thumbs-up fa-lg"></i>
+                        {{ object.get_like_count }}
+                    </a>
+                    <hr>
+                    {% if request.user.is_authenticated %}
+                        <h4>Deja un comentario</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary" type="submit">Comentar</button>
+                        </form>
+                        <hr>
+                        <h5>Comentarios</h5>
+                        {% for comment in object.comments %}
+                            <div>
+                                <h6>{{ comment.user }}:</h6>
+                                <p> {{ comment.content }}
+                                <br>
+                                <small> {{ comment.timestamp|timesince }} ago </small>    
+                                </p>
+                            </div>
+                            <hr>
+                          
+                        {% endfor %}
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="btn btn-primary btn-block">Ingresar para comentar</a>
+                    {% endif %}
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+
+
