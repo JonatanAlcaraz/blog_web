@@ -25,10 +25,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.humanize',
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
     
     'posts',
 
@@ -133,4 +134,4 @@ AUTHENTICATION_BACKENDS = [
 ]
 SITE_ID = 1
 
-AUTH_USER_MODEL = 'posts.User'
+AUTH_USER_MODEL = 'posts.User_model'

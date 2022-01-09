@@ -25,12 +25,18 @@ from posts.views import (
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
-    like
+    like,
+    login_view,
+    logout_view,
+    signup_view,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path('login/',login_view, name= 'login'),
+    path('logout/',logout_view, name= 'logout'),
+    path('signup/',signup_view, name= 'signup'),
+    #path('accounts/', include('allauth.urls')),
     path('', PostListView.as_view(), name= 'list'),
     path('create/', PostCreateView.as_view(), name= 'create'),
     path('<slug>/', PostDetailView.as_view(), name= 'detail'),
@@ -39,6 +45,8 @@ urlpatterns = [
     path('like/<slug>/', like, name= 'like')
     
 ]
+
+handler404 = 'posts.views.error_404'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL , document_root = settings.MEDIA_URL )

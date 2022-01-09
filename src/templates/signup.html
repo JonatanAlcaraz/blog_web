@@ -2,7 +2,7 @@
 <div id="content-container" class="container p-none">
     <div class="lgn-container col-lg-8">
         <form id="login-form" method="post" 
-                action="{% url 'login' %}">
+                action="{% url 'signup' %}">
             {% csrf_token %}
             <!--<table class="table">
                 <tr>
@@ -18,16 +18,14 @@
             </table>-->
 
                 {{ form.as_p }}
-                <button class="btn btn-primary" type="submit">Login</button>
+                <button class="btn btn-primary" type="submit">Sign Up</button>
                         
-            {% if form.errors %}
-                <p class=" label label-danger">
-                    Your username and password didn't match. 
-                    Please try again.
+            
+                <p class="label label-danger">
+                    {{message}}
                 </p>
-            {% endif %}
+            
 
-            <p><h4>Si no estas logeado,<a href="{% url 'signup' %}"> registrate</a></h4></p>
             <!--<input type="submit" value="Login" 
                     class="btn btn-primary pull-right" />
             <input type="hidden" name="next" value="{{ next }}" />-->

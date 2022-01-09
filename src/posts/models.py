@@ -1,9 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser 
 from django.shortcuts import reverse
 
 # Create your models here.
-class User(AbstractUser):
+class User_model(AbstractUser):
+    #REQUIRED_FIELDS = ('user',)
+    #USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
@@ -15,7 +18,7 @@ class Post(models.Model):
     thumbnail = models.ImageField()
     publish_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User , on_delete = models.CASCADE)
+    author = models.ForeignKey(User_model , on_delete = models.CASCADE)
     slug = models.SlugField()
     
     def __str__(self):
@@ -65,7 +68,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
 
-    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    user = models.ForeignKey(User_model , on_delete = models.CASCADE)
     post = models.ForeignKey(Post , on_delete= models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -75,7 +78,7 @@ class Comment(models.Model):
 
 class PostView(models.Model):
 
-    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    user = models.ForeignKey(User_model , on_delete = models.CASCADE)
     post = models.ForeignKey(Post , on_delete= models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -84,7 +87,7 @@ class PostView(models.Model):
 
 class Like(models.Model):
 
-    user = models.ForeignKey(User , on_delete = models.CASCADE)
+    user = models.ForeignKey(User_model , on_delete = models.CASCADE)
     post = models.ForeignKey(Post , on_delete= models.CASCADE)
 
     def __str__(self):

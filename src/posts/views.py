@@ -1,12 +1,56 @@
-from django.shortcuts import render , get_object_or_404 , redirect
+from django.shortcuts import render , get_object_or_404 , redirect #importar
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from posts.models import Post, PostView, Like, Comment
-from .forms import PostForm, CommentForm
+from posts.models import Post, PostView, Like, Comment, User_model 
+from .forms import PostForm, CommentForm, LogInForm, SignUpForm, SignUp_Form #importar
+from django.contrib.auth import authenticate, login, logout #importar
+from django.contrib.auth.decorators import login_required #importar
+from django.contrib.auth.models import User 
+from django.contrib.auth.mixins import LoginRequiredMixin #importar
 
-class PostListView(ListView):
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+            return redirect('list')
+        else:
+            return render(request, 'login.html', {
+                'error': 'Invalid credentials',
+                'form' : LogInForm,
+            })
+
+    return render(request, 'login.html', {'form' : LogInForm})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
+def signup_view(request):
+    
+    if request.method == "POST":
+        form = SignUp_Form(request.POST)
+        if form.is_valid():
+            form.save()    
+            return redirect('login')        
+    else:
+        form = SignUp_Form()
+
+    return render(
+        request,
+        "signup.html",{
+            'form': SignUp_Form,
+            'message' : 'error'})
+
+class PostListView(LoginRequiredMixin,ListView):
     model = Post
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin,DetailView):
     model = Post
 
     def post(self, *args, **kwargs):
@@ -33,7 +77,7 @@ class PostDetailView(DetailView):
         return object
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin,CreateView):
     model = Post
     form_class = PostForm
     success_url = '/'
@@ -46,7 +90,7 @@ class PostCreateView(CreateView):
         return context 
      
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin,UpdateView):
     model = Post
     form_class = PostForm
     success_url = '/'
@@ -58,7 +102,7 @@ class PostUpdateView(UpdateView):
         
         return context 
     
-class PostDeleteView (DeleteView):
+class PostDeleteView (LoginRequiredMixin,DeleteView):
     model = Post
     success_url = '/'
 
@@ -71,4 +115,5 @@ def like(request , slug):
     Like.objects.create(user=request.user, post=post)
     return redirect('detail' , slug = slug )
 
-
+def error_404(request, exception):
+    return render(request, '404.html')
